@@ -7,6 +7,7 @@
   <property name="reports.tests" location="build/test/reports"/>
   <property name="lib" location="lib"/>
   <property name="dist" location="dist"/>
+
   <property name="ivy.install.version" value="2.2.0" />
   <condition property="ivy.home" value="${env.IVY_HOME}">
     <isset property="env.IVY_HOME" />
@@ -94,7 +95,7 @@
 
   <target name="all" depends="clean,init,resolve,test,dist"/>
 
-  <target name="run" depends="all">
+  <target name="run">
     <java classname="ca.uqam.mgl7361.a2011.hello.Bonjour">
       <classpath refid="classpath.runtime"/>
     </java>
