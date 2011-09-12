@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<project name="Bonjour" default="all" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+  <property name="src" location="src"/>
+  <property name="src.tests" location="test"/>
+  <property name="build" location="build"/>
+  <property name="build.tests" location="build/test"/>
+  <property name="reports.tests" location="build/test/reports"/>
+  <property name="lib" location="lib"/>
+  <property name="dist" location="dist"/>
+  <property name="ivy.install.version" value="2.2.0" />
+  <condition property="ivy.home" value="${env.IVY_HOME}">
+    <isset property="env.IVY_HOME" />
+  </condition>
+  <property name="ivy.home" value="${user.home}/.ant" />
+  <property name="ivy.jar.dir" value="${ivy.home}/lib" />
+  <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+
+  <target name="download-ivy" unless="offline">
+    <mkdir dir="${ivy.jar.dir}"/>
+    <get src="http://repo2.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" dest="${ivy.jar.file}" usetimestamp="true"/>
+  </target>
+
+  <target name="init-ivy" depends="download-ivy">
+    <path id="ivy.lib.path">
+      <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+    </path>
+    <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+  </target>
+
+  <target name="clean" description="clean up">
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
+
+  <target name="destroy" description="really clean" depends="clean">
+    <delete dir="${lib}"/>
+  </target>
+
+  <target name="init">
+    <mkdir dir="${build}"/>
+    <mkdir dir="${build}/classes"/>
+    <mkdir dir="${build.tests}/classes"/>
+    <mkdir dir="${reports.tests}"/>
+    <mkdir dir="${dist}"/>
+    <mkdir dir="${lib}"/>
+  </target>
+
+  <target name="resolve" depends="init, init-ivy" description="retrieve dependencies with ivy">
+    <ivy:retrieve pattern="${lib}/[conf]/[artifact].[ext]"/>
+  </target>
+
+  <path id="classpath.compile">
+    <fileset dir="${lib}" includes="*.jar"/>
+  </path>
+  <path id="classpath.runtime">
+    <path refid="classpath.compile"/>
+    <fileset dir="${dist}" includes="*.jar"/>
+  </path>
+  <path id="classpath.test.compile">
+    <path refid="classpath.compile"/>
+    <fileset dir="${lib}/test" includes="*.jar"/>
+    <pathelement location="${build}/classes"/>
+  </path>
+  <path id="classpath.test.runtime">
+    <path refid="classpath.test.compile"/>
+    <pathelement location="${build.tests}/classes"/>
+  </path>
+
+  <target name="testcompile" depends="init" description="compile the source">
+    <javac srcdir="${src.tests}" destdir="${build.tests}/classes">
+      <classpath refid="classpath.test.compile"/>
+    </javac>
+  </target>
+
+  <target name="compile" depends="init" description="compile the source">
+    <javac srcdir="${src}" destdir="${build}/classes">
+      <classpath refid="classpath.compile"/>
+    </javac>
+  </target>
+
+  <target name="dist" depends="compile" description="generate the distribution">
+    <jar jarfile="${dist}/Bonjour.jar" basedir="${build}/classes"/>
+  </target>
+
+  <target name="test" depends="clean,compile,testcompile">
+    <junit printsummary="yes" haltonfailure="yes">
+      <classpath refid="classpath.test.runtime"/>
+      <formatter type="plain"/>
+      <batchtest todir="${reports.tests}">
+        <fileset dir="${build.tests}/classes" includes="**/*Test.class"/>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="all" depends="clean,init,resolve,test,dist"/>
+
+  <target name="run" depends="all">
+    <java classname="ca.uqam.mgl7361.a2011.hello.Bonjour">
+      <classpath refid="classpath.runtime"/>
+    </java>
+  </target>
+
+</project>
