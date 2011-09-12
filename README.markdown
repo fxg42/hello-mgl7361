@@ -6,7 +6,7 @@ Application simpliste illustrant l'utilisation de [Ant][ant] et de [Ivy][ivy].
 Prérequis
 ---------
 
-Java 6 et Ant doivent être installés.
+Java [JDK >= 6][jdk], [Ant][ant] et [git][git] doivent être installés.
 
 Marche à suivre
 ---------------
@@ -18,3 +18,6 @@ Marche à suivre
 
 [ant]: http://ant.apache.org/
 [ivy]: http://ant.apache.org/ivy/
+[git]: http://git-scm.com/
+[jdk]: http://www.oracle.com/technetwork/java/javase/downloads/java-se-jdk-7-download-432154.html
+
