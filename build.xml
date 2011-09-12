@@ -47,7 +47,7 @@
   </target>
 
   <target name="resolve" depends="init, init-ivy" description="retrieve dependencies with ivy">
-    <ivy:retrieve pattern="${lib}/[conf]/[artifact].[ext]"/>
+    <ivy:retrieve/>
   </target>
 
   <path id="classpath.compile">
@@ -59,7 +59,6 @@
   </path>
   <path id="classpath.test.compile">
     <path refid="classpath.compile"/>
-    <fileset dir="${lib}/test" includes="*.jar"/>
     <pathelement location="${build}/classes"/>
   </path>
   <path id="classpath.test.runtime">

@@ -1,9 +1,6 @@
 <ivy-module version="2.0">
   <info organisation="ca.uqam.mgl7361.a2011" module="hello"/>
-  <configurations>
-    <conf name="test"/>
-  </configurations>
   <dependencies>
-    <dependency org="junit" name="junit" rev="4.9" conf="test->default"/>
+    <dependency org="junit" name="junit" rev="4.9"/>
   </dependencies>
 </ivy-module>
